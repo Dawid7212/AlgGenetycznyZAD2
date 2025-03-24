@@ -10,12 +10,58 @@ namespace AlgGenetyczny
     internal class Program
     {
         private static Random rand = new Random();
-        public static double Przystosowanie(double[] Osobnik, double x)
+        static Dictionary<double, double> bazaProbek = new Dictionary<double, double>
+        {
+            { -1.00000,  0.59554 },
+            { -0.80000,  0.58813 },
+            { -0.60000,  0.64181 },
+            { -0.40000,  0.68587 },
+            { -0.20000,  0.44783 },
+            {  0.00000,  0.40836 },
+            {  0.20000,  0.38241 },
+            {  0.40000, -0.05933 },
+            {  0.60000, -0.12478 },
+            {  0.80000, -0.36847 },
+            {  1.00000, -0.39935 },
+            {  1.20000, -0.50881 },
+            {  1.40000, -0.63435 },
+            {  1.60000, -0.59979 },
+            {  1.80000, -0.64107 },
+            {  2.00000, -0.51808 },
+            {  2.20000, -0.38127 },
+            {  2.40000, -0.12349 },
+            {  2.60000, -0.09624 },
+            {  2.80000,  0.27893 },
+            {  3.00000,  0.48965 },
+            {  3.20000,  0.33089 },
+            {  3.40000,  0.70615 },
+            {  3.60000,  0.53342 },
+            {  3.80000,  0.43321 },
+            {  4.00000,  0.64790 },
+            {  4.20000,  0.48834 },
+            {  4.40000,  0.18440 },
+            {  4.60000, -0.02389 },
+            {  4.80000, -0.10261 },
+            {  5.00000, -0.33594 },
+            {  5.20000, -0.35101 },
+            {  5.40000, -0.62027 },
+            {  5.60000, -0.55719 },
+            {  5.80000, -0.66377 },
+            {  6.00000, -0.62740 }
+        };
+        public static double Przystosowanie(double[] Osobnik)
         {
             double pa = Osobnik[0];
             double pb = Osobnik[1];
             double pc = Osobnik[2];
-            double przystosowanie = pa *Math.Sin(pb * x +pc);
+            double przystosowanie = 0.0;
+            foreach (var probka in bazaProbek)
+            {
+                double x = probka.Key;
+                double y = probka.Value;
+                double yObliczone = pa * Math.Sin(pb * x + pc);
+                przystosowanie += Math.Pow(y - yObliczone, 2);
+            }
             return przystosowanie;
         }
         public static int[][] StworzPule2(int ilosc, int chromosomy)
@@ -82,7 +128,7 @@ namespace AlgGenetyczny
         }
         public static int[] OperatorSelTurniejowej(int[][] pulaOsobnikow, double[] ocenaOsobnikow)
         {
-            int RozmiarTurnieju = 2;
+            int RozmiarTurnieju = 3;
             int[] skladTurnieju = new int[RozmiarTurnieju];
             //Random rand = new Random();
             for (int i = 0; i < RozmiarTurnieju; i++)
@@ -155,8 +201,20 @@ namespace AlgGenetyczny
         }
         static void Main(string[] args)
         {
-            
 
+            int LBnP = 4;
+            int lParametrow = 3;
+            int lChromosomow = LBnP * lParametrow;
+            int lOsobnikow = 13;
+            float Min = 0;
+            float Max = 3;
+            //1.Tworze losową pulę osobników
+            int[][] Pula = StworzPule2(lOsobnikow, lChromosomow);
+            double[][] PulaDekodowana = new double[lOsobnikow][];
+            int[] chromosomytymczasowe = new int[Pula[0].Length / lParametrow];
+            double[] przystosowanie = new double[lOsobnikow];
+
+           
             Console.ReadKey();
         }
     }
