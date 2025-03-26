@@ -137,9 +137,9 @@ namespace AlgGenetyczny
             }
 
             int najI = skladTurnieju[0];
-            for (int i = 0; i < RozmiarTurnieju - 1; i++)
+            for (int i = 1; i < RozmiarTurnieju ; i++)
             {
-                if (ocenaOsobnikow[skladTurnieju[i]] > ocenaOsobnikow[najI])
+                if (ocenaOsobnikow[skladTurnieju[i]] < ocenaOsobnikow[najI])
                 {
                     najI = skladTurnieju[i];
                 }
@@ -151,9 +151,9 @@ namespace AlgGenetyczny
             int LBnOs = cbr1.Length;
             // Random rand = new Random();
             int bCiecie = rand.Next(0, LBnOs - 2);
-            Console.WriteLine("Wylosowane miejsce przeciecia: " + bCiecie);
-            int[] cbp1 = new int[9];
-            int[] cbp2 = new int[9];
+            //Console.WriteLine("Wylosowane miejsce przeciecia: " + bCiecie);
+            int[] cbp1 = new int[cbr1.Length];
+            int[] cbp2 = new int[cbr2.Length];
             for (int i = 0; i < bCiecie; i++)
             {
                 cbp1[i] = cbr1[i];
@@ -214,7 +214,76 @@ namespace AlgGenetyczny
             int[] chromosomytymczasowe = new int[Pula[0].Length / lParametrow];
             double[] przystosowanie = new double[lOsobnikow];
 
-           
+            //2.Dekodowanie chormosomów wylosowanych osobników i tworzenie przystosowania 
+            for (int i = 0; i < Pula.Length; i++)
+            {
+                double[] ParametryTymczasowe = new double[lParametrow];
+                int y = 0;
+                for (int z = 0; z < lParametrow; z++)
+                {
+                    for (int j = 0; j < Pula[0].Length / lParametrow; j++)
+                    {
+                        chromosomytymczasowe[j] = Pula[i][y];
+                        y++;
+                    }
+                    ParametryTymczasowe[z] = Dekodowanie(chromosomytymczasowe, Min, Max, LBnP);
+                }
+                PulaDekodowana[i] = ParametryTymczasowe;
+                przystosowanie[i] = Przystosowanie(ParametryTymczasowe);
+            }
+            // Wypisuje najlepszą oraz średnią wartość funkcji przystosowania osobników w puli
+            Console.WriteLine("Srednia przystosowania pierwotnej puli: " + przystosowanie.Average());
+            Console.WriteLine("Najlepsze przystosowanie w pierwotnej puli: " + przystosowanie.Min());
+            for (int i=0;i<100;i++)
+            {
+                //1.Tworze nowa pulę osobników
+                int[][] nowapula = new int[Pula.Length][];
+                for (int j =0;j<Pula.Length-1;j++)
+                {
+                    nowapula[j] = OperatorSelTurniejowej(Pula, przystosowanie);
+                }
+                //2. Stosuje operator krzyżowania na wybranych osobnikach
+                (nowapula[0],nowapula[1]) = OperatorKrzyżowania(nowapula[0], nowapula[1]);
+                (nowapula[2], nowapula[3]) = OperatorKrzyżowania(nowapula[2], nowapula[3]);
+                (nowapula[8], nowapula[9]) = OperatorKrzyżowania(nowapula[8], nowapula[9]);
+                (nowapula[nowapula.Length-3], nowapula[nowapula.Length - 2]) = OperatorKrzyżowania(nowapula[nowapula.Length - 3], nowapula[nowapula.Length - 2]);
+                //3.Urzywam operatora mutacji na osobnikach 5 - ostatni
+                for (int j = 4;j<nowapula.Length-1;j++)
+                {
+                    nowapula[j] = OperatorMutacji(nowapula[j]);
+                }
+                //4.Do nowej puli dodaje najlepszego ze starej
+                nowapula[nowapula.Length - 1] = OperatorHotDeck(Pula,przystosowanie);
+                //5.Dekoduje osobniki nowej puli
+                double[][] nowaPulaDekodowana = new double[nowapula.Length][];
+                int[] chromosomytmp = new int[Pula[0].Length / lParametrow];
+                double[] noweprzystosowanie = new double[nowapula.Length];
+                for (int k = 0; k < nowapula.Length; k++)
+                {
+                    double[] ocenaTymczasowa = new double[lParametrow];
+                    int y = 0;
+                    for (int z = 0; z < lParametrow; z++)
+                    {
+                        for (int j = 0; j < nowapula[0].Length / lParametrow; j++)
+                        {
+                            chromosomytmp[j] = nowapula[k][y];
+                            y++;
+                        }
+                        ocenaTymczasowa[z] = Dekodowanie(chromosomytmp, Min, Max, LBnP);
+                    }
+                    nowaPulaDekodowana[k] = ocenaTymczasowa;
+                    //Licze funkcje przystosowania 
+                    noweprzystosowanie[k] = Przystosowanie(ocenaTymczasowa);
+                }
+                Console.WriteLine("Srednia przystosowania pierwotnej puli: " + noweprzystosowanie.Average());
+                Console.WriteLine("Najlepsze przystosowanie w pierwotnej puli: " + noweprzystosowanie.Min());
+                Pula = nowapula;
+                przystosowanie = noweprzystosowanie;
+
+            }
+
+
+
             Console.ReadKey();
         }
     }
