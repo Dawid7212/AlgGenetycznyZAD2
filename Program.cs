@@ -99,7 +99,7 @@ namespace AlgGenetyczny
         public static int[] Kodowanie(double pm, float Max, float Min, int liczbaCh)
         {
             float ZD = Max - Min;
-            int[] cb = new int[3];
+            int[] cb = new int[liczbaCh];
             if (pm < Min)
             {
                 pm = Min;
