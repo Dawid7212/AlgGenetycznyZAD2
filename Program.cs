@@ -144,7 +144,7 @@ namespace AlgGenetyczny
                     najI = skladTurnieju[i];
                 }
             }
-            return pulaOsobnikow[najI];
+            return pulaOsobnikow[najI].ToArray();
         }
         public static (int[], int[]) OperatorKrzyżowania(int[] cbr1, int[] cbr2)
         {
@@ -197,7 +197,7 @@ namespace AlgGenetyczny
                     najlepszy = i;
                 }
             }
-            return pulaOsobnikow[najlepszy];
+            return pulaOsobnikow[najlepszy].ToArray();
         }
         static void Main(string[] args)
         {
@@ -275,13 +275,14 @@ namespace AlgGenetyczny
                     //Licze funkcje przystosowania 
                     noweprzystosowanie[k] = Przystosowanie(ocenaTymczasowa);
                 }
-                Console.WriteLine("Srednia przystosowania pierwotnej puli: " + noweprzystosowanie.Average());
-                Console.WriteLine("Najlepsze przystosowanie w pierwotnej puli: " + noweprzystosowanie.Min());
-                Pula = nowapula;
-                przystosowanie = noweprzystosowanie;
+                Console.WriteLine("Srednia przystosowania w "+ (i+1) +" puli: " + noweprzystosowanie.Average());
+                Console.WriteLine("Najlepsze przystosowanie w "+ (i+1) +" puli: " + noweprzystosowanie.Min());
+                Pula = nowapula.Select(a => a.ToArray()).ToArray();
+                przystosowanie = noweprzystosowanie.ToArray();
+
 
             }
-
+            
 
 
             Console.ReadKey();
