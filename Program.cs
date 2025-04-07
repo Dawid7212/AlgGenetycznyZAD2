@@ -282,7 +282,26 @@ namespace AlgGenetyczny
 
 
             }
-            
+
+
+
+            int[] najlepszyOsobnikNaKoniec = OperatorHotDeck(Pula, przystosowanie);
+            double[] najlepszeParametry = new double[lParametrow];
+            int[] chromosomyt = new int[Pula[0].Length / lParametrow];
+            int y2 = 0;
+            for (int z = 0; z < lParametrow; z++)
+            {
+                for (int j = 0; j < Pula[0].Length / lParametrow; j++)
+                {
+                    chromosomyt[j] = najlepszyOsobnikNaKoniec[y2];
+                    y2++;
+                }
+                najlepszeParametry[z] = Dekodowanie(chromosomyt, Min, Max, LBnP);
+            }
+            Console.WriteLine("Parametry najlepszego osobnika:");
+            Console.WriteLine("pa = " + najlepszeParametry[0]);
+            Console.WriteLine("pb = " + najlepszeParametry[1]);
+            Console.WriteLine("pc = " + najlepszeParametry[2]);
 
 
             Console.ReadKey();
